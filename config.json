@@ -1,0 +1,17 @@
+{
+    "token": "TOKEN",
+    "clientID": "CLIENT ID",
+    "admins": ["LIST OF ADMINS"],
+    "botName": "BOT NAME",
+    "fakeServers": "AMOUNT OF SERVERS THE BOT WILL SHOW IT IS IN",
+    "nukeOptions": {
+        "channelNames": "NAME OF CHANNEL TO SPAM",
+        "webhookName": "NAME OF WEBHOOK TO SPAM MESSAGE",
+        "webhookAvatar": "WEBHOOK AVATAR LINK",
+        "webhookMessage": "WEBHOOK SPAM MESSAGE",
+        "banReason": "REASON FOR BAN",
+        "nameChange": "CHANGER SERVER NAME",
+        "serverIconChange": "CHANGE SERVER ICON",
+        "serverBannerChange": "CHANGER SERVER BANNER (Only for level 2 boosted servers)"
+    }
+}
