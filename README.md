@@ -1,3 +1,4 @@
+![KaboomaDuck](https://github.com/InternetFelons/kabooma-duck/assets/86261944/a99a1ae4-f701-4a7e-a7ad-17854828996c)
 # Kabooma Duck - Discord Nuker
 Kabooma Duck is a heavy-hitting and fully customizable Discord Nuker. 
 
