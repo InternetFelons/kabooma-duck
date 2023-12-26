@@ -17,6 +17,7 @@ Kabooma Duck is a heavy-hitting and fully customizable Discord Nuker.
 - Give admin to @everyone
 - Disable community
 - **Bypass rate limits**
+- Double Nuking
 
 ## Configuration Guide
  ### config.json:
