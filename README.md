@@ -2,7 +2,7 @@
 # Kabooma Duck - Discord Nuker
 Kabooma Duck is a heavy-hitting and fully customizable Discord Nuker. 
 
-**Note: We do not encourage any malicious use of this bot. Educational Purposes ONLY.** 
+**Note: We do not encourage any malicious use of this bot. Educational Purposes ONLY. We are not responsible for anything you decide to do with this program.** 
 
     git clone https://github.com/InternetFelons/kabooma-duck.git
 
