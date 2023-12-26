@@ -30,7 +30,7 @@ Kabooma Duck is a heavy-hitting and fully customizable Discord Nuker.
 		"advancedOptions": {...}
 	}
 
- - `token`: string- Bot token, found on the Bot tab of an application, may require 2FA to access.
+ - `token`: string - Bot token, found on the Bot tab of an application, may require 2FA to access.
  - `clientID`: string - Client ID (A.K.A. Application ID) is found in the General Information tab of an application.
  - `admins`: array - User IDs of bot Administrators. These are the people that have access to system commands in Direct Messages.
  - `botName`: string - Name of the bot set in the Developer Portal
